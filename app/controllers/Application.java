@@ -90,11 +90,13 @@ public class Application extends Controller {
 		User u = MongoPlugin.ds.get(User.class, new ObjectId(userId));
 		if (u != null) {
 
-			// Check for Project Name duplication and toLower
+			// Check for Project Name duplication for user. Because we are prepending username
 
 			Promise<WS.Response> result = WS.url("https://api.bitbucket.org/1.0/repositories").setAuth("cloworker", "12rasi19", AuthScheme.BASIC).post("name=" + u.username + "-" + projectName);
 			System.out.println(result.get().getBody());
-
+			//Take slug from this response and store it in project. It is required for next call.
+			
+			
 			System.out.println("https://api.bitbucket.org/1.0/privileges/cloworker/" + u.username + "-" + projectName + "/" + u.id);
 			Promise<WS.Response> result1 = WS.url("https://api.bitbucket.org/1.0/privileges/cloworker/" + u.username + "-" + projectName + "/" + u.id)
 					.setAuth("cloworker", "12rasi19", AuthScheme.BASIC).put("admin");
