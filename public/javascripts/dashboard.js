@@ -7,7 +7,7 @@ function onLoad() {
 			console.log("logout Response", data);
 			var Json = eval("(" + data + ")");			
 			if (Json.result == true) {
-				removeCookie("cloapp-sessionId");
+				removeCookie("cloworker-sessionId");
 				window.location.href = "/";
 			} else {
 				alert(Json.message);

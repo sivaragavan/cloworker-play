@@ -1,6 +1,6 @@
 package utils;
 
-public class CodeFSConstants {
+public class CloworkerConstants {
 
 	public static String project_created = "Project Created";
 	public static String user_added = "User Added";

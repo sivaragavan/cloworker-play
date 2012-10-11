@@ -20,7 +20,7 @@ public class Application extends Controller {
 	}
 
 	public static Result dashboard() throws Exception {
-		Http.Cookie cookie = request().cookies().get("cloapp-sessionId");
+		Http.Cookie cookie = request().cookies().get("cloworker-sessionId");
 		if (cookie != null && !cookie.value().equals("")) {
 			String sessionId = cookie.value();
 			Session s = MongoPlugin.ds.get(Session.class, new ObjectId(sessionId));

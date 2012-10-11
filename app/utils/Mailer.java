@@ -25,7 +25,7 @@ public class Mailer {
 		String[] userArray = userIds.toArray(new String[0]);
 
 		mail.addRecipient(userArray);
-		mail.addFrom("CodeFS Notification <codefs.noreply@gmail.com>");
+		mail.addFrom("Cloworker Notification <cloworker.noreply@gmail.com>");
 		mail.send(text, html);
 	}
 	
@@ -36,7 +36,7 @@ public class Mailer {
 		mail.setSubject(subject);
 		
 		mail.addRecipient(user.email);
-		mail.addFrom("CodeFS Notification <codefs.noreply@gmail.com>");
+		mail.addFrom("Cloworker Notification <cloworker.noreply@gmail.com>");
 		mail.send(text, html);
 	}
 }

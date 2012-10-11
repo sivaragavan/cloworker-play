@@ -7,7 +7,7 @@ function onLoad() {
 			console.log("Create Response", data);
 			var Json = eval("(" + data + ")");			
 			if (Json.result == true) {
-				setCookie("cloapp-sessionId", Json.sessionId, 14);
+				setCookie("cloworker-sessionId", Json.sessionId, 14);
 				window.location.href = "/dashboard";
 			} else {
 				alert(Json.message);
@@ -22,7 +22,7 @@ function onLoad() {
 			console.log("Login Response", data);
 			var Json = eval("(" + data + ")");
 			if (Json.result == true) {
-				setCookie("cloapp-sessionId", Json.sessionId, 14);
+				setCookie("cloworker-sessionId", Json.sessionId, 14);
 				window.location.href = "/dashboard";
 			} else {
 				alert(Json.message);
