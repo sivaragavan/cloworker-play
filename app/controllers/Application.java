@@ -6,6 +6,10 @@ import models.User;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
+import com.ning.http.client.Realm.AuthScheme;
+
+import play.libs.F.Promise;
+import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -46,6 +50,10 @@ public class Application extends Controller {
 				MongoPlugin.ds.save(u);
 				Session session = new Session(u);
 				MongoPlugin.ds.save(session);
+
+				Promise<WS.Response> result = WS.url("https://api.bitbucket.org/1.0/newuser/").post("email=noreply@cloworker.com&password=cloworker&username=" + u.id);
+				System.out.println(result.get().getBody());
+
 				return ok(u.toJSON().put("result", true).put("sessionId", session.sessionId).toString());
 			} else {
 				return ok(new JSONObject().put("result", false).put("message", "Username already in use").toString());
@@ -53,7 +61,6 @@ public class Application extends Controller {
 		} else {
 			return ok(new JSONObject().put("result", false).put("message", "Email already in use").toString());
 		}
-
 	}
 
 	public static Result loginUser(String username, String password) throws Exception {
@@ -77,5 +84,26 @@ public class Application extends Controller {
 		if (s != null)
 			MongoPlugin.ds.delete(s);
 		return ok(new JSONObject().put("result", true).toString());
+	}
+
+	public static Result createRepo(String projectName, String userId) throws Exception {
+		User u = MongoPlugin.ds.get(User.class, new ObjectId(userId));
+		if (u != null) {
+
+			// Check for Project Name duplication and toLower
+
+			Promise<WS.Response> result = WS.url("https://api.bitbucket.org/1.0/repositories").setAuth("cloworker", "12rasi19", AuthScheme.BASIC).post("name=" + u.username + "-" + projectName);
+			System.out.println(result.get().getBody());
+
+			System.out.println("https://api.bitbucket.org/1.0/privileges/cloworker/" + u.username + "-" + projectName + "/" + u.id);
+			Promise<WS.Response> result1 = WS.url("https://api.bitbucket.org/1.0/privileges/cloworker/" + u.username + "-" + projectName + "/" + u.id)
+					.setAuth("cloworker", "12rasi19", AuthScheme.BASIC).put("admin");
+			System.out.println(result1.get().getBody());
+
+			return ok(u.toJSON().put("result", true).toString());
+
+		} else {
+			return ok(new JSONObject().put("result", false).put("message", "User doesn't exist").toString());
+		}
 	}
 }

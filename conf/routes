@@ -10,6 +10,7 @@ GET     /dashboard                 		controllers.Application.dashboard()
 GET		/user/create					controllers.Application.createUser(email : String, username : String, password : String)
 GET		/user/login						controllers.Application.loginUser(username : String, password : String)
 GET		/user/logout					controllers.Application.logoutUser(sessionId : String)
+GET		/repo/create					controllers.Application.createRepo(projectName : String, userId : String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
