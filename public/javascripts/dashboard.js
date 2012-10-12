@@ -14,6 +14,20 @@ function onLoad() {
 			}
 		});
 	});
+	
+	$("#createRepo").click(function() {
+		$.ajax({
+			url : "/repo/create?userId=" + userId + "&projectName=" + $("#repoName").val()
+		}).done(function(data) {
+			console.log("create repo Response", data);
+			var Json = eval("(" + data + ")");			
+			if (Json.result == true) {
+				
+			} else {
+				alert(Json.message);
+			}
+		});
+	});
 
 }
 
