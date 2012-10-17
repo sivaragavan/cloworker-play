@@ -6,6 +6,8 @@
 GET     /                 				controllers.Application.index()
 GET     /dashboard                 		controllers.Application.dashboard()
 
+GET		/command/:command					controllers.Application.executeCommand(command : String)
+
 # APIs
 GET		/user/create					controllers.Application.createUser(email : String, username : String, password : String)
 GET		/user/login						controllers.Application.loginUser(username : String, password : String)

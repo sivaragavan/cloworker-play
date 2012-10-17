@@ -6,14 +6,19 @@ import models.User;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
-import com.ning.http.client.Realm.AuthScheme;
-
 import play.libs.F.Promise;
 import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import plugins.MongoPlugin;
+
+import com.ning.http.client.Realm.AuthScheme;
+import command.Command;
+import command.FlipDownCommand;
+import command.FlipUpCommand;
+import command.Light;
+import command.Switch;
 
 public class Application extends Controller {
 
@@ -40,6 +45,27 @@ public class Application extends Controller {
 	}
 
 	// APIs
+
+	public static Result executeCommand(String command) throws Exception {
+		Light lamp = new Light();
+		Command switchUp = new FlipUpCommand(lamp);
+		Command switchDown = new FlipDownCommand(lamp);
+
+		Switch s = new Switch();
+
+		try {
+			if (command.equalsIgnoreCase("ON")) {
+				s.storeAndExecute(switchUp);
+			}
+			if (command.equalsIgnoreCase("OFF")) {
+				s.storeAndExecute(switchDown);
+			}
+		} catch (Exception e) {
+			System.out.println("Arguments required.");
+		}
+
+		return ok();
+	}
 
 	public static Result createUser(String email, String username, String password) throws Exception {
 		User u = MongoPlugin.ds.find(User.class).field("email").equal(email).get();
@@ -90,13 +116,14 @@ public class Application extends Controller {
 		User u = MongoPlugin.ds.get(User.class, new ObjectId(userId));
 		if (u != null) {
 
-			// Check for Project Name duplication for user. Because we are prepending username
+			// Check for Project Name duplication for user. Because we are
+			// prepending username
 
 			Promise<WS.Response> result = WS.url("https://api.bitbucket.org/1.0/repositories").setAuth("cloworker", "12rasi19", AuthScheme.BASIC).post("name=" + u.username + "-" + projectName);
 			System.out.println(result.get().getBody());
-			//Take slug from this response and store it in project. It is required for next call.
-			
-			
+			// Take slug from this response and store it in project. It is
+			// required for next call.
+
 			System.out.println("https://api.bitbucket.org/1.0/privileges/cloworker/" + u.username + "-" + projectName + "/" + u.id);
 			Promise<WS.Response> result1 = WS.url("https://api.bitbucket.org/1.0/privileges/cloworker/" + u.username + "-" + projectName + "/" + u.id)
 					.setAuth("cloworker", "12rasi19", AuthScheme.BASIC).put("admin");
